@@ -1,73 +1,21 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>EcoApp – Forum</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<header>
-    <h1>Forum EcoApp</h1>
-    <p>Partagez vos idées, documents et images</p>
-</header>
-
-<main>
-
-    <h2>Publier un message</h2>
-
-    <p>Entrez le mot de passe pour publier :</p>
-    <input type="password" id="mdp" placeholder="Mot de passe">
-    <button onclick="verifier()">Valider</button>
-
-    <div id="zone-publi" style="display:none; margin-top:20px;">
-        <a class="forum-btn" href="https://github.com/valou2908/EcoApp/issues" target="_blank">
-            ➜ Publier un message (texte + images + fichiers)
-        </a>
-    </div>
-
-    <h2>Derniers messages</h2>
-    <div id="issues"></div>
-
-</main>
-
-<footer>
-    <p>© 2024 – EcoApp</p>
-</footer>
-
-<script>
-const MDP = "EcoApp2024"; // 🔐 Ton mot de passe ici
-
-function verifier() {
-    const saisie = document.getElementById("mdp").value;
-    if (saisie === MDP) {
-        document.getElementById("zone-publi").style.display = "block";
-    } else {
-        alert("Mot de passe incorrect");
-    }
+.forum-btn {
+    display: inline-block;
+    background: #2e7d32;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
 }
 
-async function chargerIssues() {
-    const url = "https://api.github.com/repos/valou2908/EcoApp/issues";
-    const res = await fetch(url);
-    const issues = await res.json();
-
-    const zone = document.getElementById("issues");
-    zone.innerHTML = "";
-
-    issues.forEach(issue => {
-        zone.innerHTML += `
-            <div class="post">
-                <h3>${issue.title}</h3>
-                <p>${issue.body}</p>
-                <a href="${issue.html_url}" target="_blank">Voir / Répondre</a>
-            </div>
-        `;
-    });
+.forum-btn:hover {
+    background: #1b5e20;
 }
 
-chargerIssues();
-</script>
-
-</body>
-</html>
+.post {
+    background: #e8f5e9;
+    padding: 15px;
+    margin: 15px 0;
+    border-left: 4px solid #2e7d32;
+    border-radius: 4px;
+}
