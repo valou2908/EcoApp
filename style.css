@@ -132,3 +132,13 @@ body {
         gap: 20px;
     }
 }
+@media (max-width: 768px) {
+    body {
+        /* Cette ligne permet de faire défiler la page assez bas 
+           pour voir le contenu derrière la barre mobile */
+        padding-bottom: 100px !important; 
+    }
+    .nav-mobile {
+        display: flex !important; /* Force l'affichage sur tel */
+    }
+}
