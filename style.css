@@ -1,4 +1,3 @@
-/* --- VARIABLES ET RESET --- */
 :root {
     --primary: #2e7d32;
     --primary-hover: #1b5e20;
@@ -8,9 +7,7 @@
     --shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
     margin: 0;
@@ -18,6 +15,20 @@ body {
     background: var(--bg-color);
     color: var(--text-color);
     line-height: 1.6;
+}
+
+/* --- NAVIGATION PC (Nouveau) --- */
+.nav-pc {
+    background: #1b5e20;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.nav-pc a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
 }
 
 /* --- HEADER ET FOOTER --- */
@@ -36,14 +47,12 @@ body {
     margin-top: 50px;
 }
 
-/* --- MISE EN PAGE (CONTAINER) --- */
 .container {
     width: 90%;
     max-width: 1000px;
     margin: 30px auto;
 }
 
-/* --- CARTES ET ÉLÉMENTS --- */
 .card {
     background: var(--card-bg);
     padding: 25px;
@@ -62,11 +71,6 @@ body {
     font-weight: bold;
     cursor: pointer;
     border: none;
-    transition: background 0.3s ease;
-}
-
-.btn:hover {
-    background: var(--primary-hover);
 }
 
 .post {
@@ -77,14 +81,9 @@ body {
     border-radius: 6px;
 }
 
-.post h3 {
-    margin-top: 0;
-    color: var(--primary);
-}
-
-/* --- NAVIGATION MOBILE (BARRE DU BAS) --- */
+/* --- NAVIGATION MOBILE --- */
 .nav-mobile {
-    display: none; /* Caché par défaut sur PC */
+    display: none; 
     position: fixed;
     bottom: 0;
     left: 0;
@@ -92,60 +91,44 @@ body {
     background: white;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
     justify-content: space-around;
-    padding: 12px 0;
+    padding: 15px 0;
     z-index: 1000;
 }
 
 .nav-item {
     text-decoration: none;
     color: #666;
-    font-size: 0.9rem;
     font-weight: bold;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
-.nav-item.active {
-    color: var(--primary);
-}
-
-/* --- ADAPTATION TÉLÉPHONE (MOBILE) --- */
+/* --- ADAPTATION TÉLÉPHONE --- */
 @media (max-width: 768px) {
+    .nav-pc { display: none; } /* Cache la barre PC sur mobile */
+    .nav-mobile { display: flex; } /* Affiche la barre mobile */
+    
+    body {
+        padding-bottom: 80px; /* IMPORTANT : Crée l'espace pour voir le bas du forum */
+    }
+
     .container {
         width: 95%;
-        margin: 15px auto 80px auto; /* Marge en bas pour ne pas cacher le contenu sous la nav */
-    }
-
-    .header {
-        padding: 25px 15px;
-    }
-
-    .header h1 {
-        font-size: 1.8rem;
-    }
-
-    .nav-mobile {
-        display: flex; /* Affiché uniquement sur mobile */
+        margin-bottom: 20px;
     }
 
     .btn {
         display: block;
-        text-align: center;
         width: 100%;
+        text-align: center;
     }
 }
 
-/* --- ADAPTATION PC (DESKTOP) --- */
+/* --- ADAPTATION PC --- */
 @media (min-width: 769px) {
-    /* Sur PC, on peut mettre les posts en deux colonnes si on veut */
+    .nav-mobile { display: none; }
+    
     #issues {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 20px;
-    }
-    
-    .post {
-        margin: 0;
     }
 }
