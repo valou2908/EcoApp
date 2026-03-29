@@ -1,287 +1,154 @@
 :root {
-
     --primary: #2e7d32;
-
     --primary-hover: #1b5e20;
-
     --bg-color: #f3f7f3;
-
     --card-bg: #ffffff;
-
     --text-color: #333;
-
     --shadow: 0 4px 12px rgba(0,0,0,0.1);
-
 }
 
-
-
-* { box-sizing: border-box; }
-
-
+* { 
+    box-sizing: border-box; 
+}
 
 body {
-
     margin: 0;
-
-    font-family: 'Segoe UI', Arial, sans-serif;
-
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: var(--bg-color);
-
     color: var(--text-color);
-
     line-height: 1.6;
-
 }
 
-
-
-/* --- NAVIGATION PC (Nouveau) --- */
-
+/* --- NAVIGATION --- */
 .nav-pc {
-
-    background: #1b5e20;
-
+    background: var(--primary-hover);
     text-align: center;
-
-    padding: 10px 0;
-
+    padding: 15px 0;
 }
-
-
 
 .nav-pc a {
-
     color: white;
-
     text-decoration: none;
-
-    margin: 0 15px;
-
-    font-weight: bold;
-
+    margin: 0 20px;
+    font-weight: 600;
+    transition: opacity 0.2s;
 }
 
+.nav-pc a:hover { opacity: 0.8; }
 
-
-/* --- HEADER ET FOOTER --- */
-
+/* --- CONTENEURS --- */
 .header {
-
     background: var(--primary);
-
     color: white;
-
     text-align: center;
-
-    padding: 40px 20px;
-
+    padding: 50px 20px;
 }
-
-
-
-.footer {
-
-    text-align: center;
-
-    padding: 30px;
-
-    background: var(--primary);
-
-    color: white;
-
-    margin-top: 50px;
-
-}
-
-
 
 .container {
-
-    width: 90%;
-
-    max-width: 1000px;
-
+    width: 95%;
+    max-width: 1100px;
     margin: 30px auto;
-
 }
-
-
 
 .card {
-
     background: var(--card-bg);
-
     padding: 25px;
-
     margin-bottom: 25px;
-
-    border-radius: 12px;
-
+    border-radius: 15px;
     box-shadow: var(--shadow);
-
 }
 
-
-
+/* --- BOUTONS --- */
 .btn {
-
     display: inline-block;
-
     background: var(--primary);
-
     color: white !important;
-
     padding: 12px 25px;
-
-    border-radius: 8px;
-
+    border-radius: 10px;
     text-decoration: none;
-
     font-weight: bold;
-
-    cursor: pointer;
-
     border: none;
-
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
 }
 
+.btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
 
+/* --- SECTION MESSAGES (L'affichage des posts) --- */
+#issues {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
 .post {
-
-    background: #e8f5e9;
-
+    background: #ffffff;
     padding: 20px;
+    border-left: 6px solid var(--primary);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    /* Sécurité anti-débordement */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
 
+.post h3 {
+    margin-top: 0;
+    color: var(--primary);
+    font-size: 1.3rem;
+}
+
+/* Correction spécifique pour les IMAGES dans les messages */
+.post img {
+    max-width: 100%; /* Ne dépasse jamais */
+    height: auto;    /* Garde les proportions */
+    border-radius: 8px;
     margin: 15px 0;
-
-    border-left: 5px solid var(--primary);
-
-    border-radius: 6px;
-
+    display: block;
 }
 
-
-
-/* --- NAVIGATION MOBILE --- */
-
+/* --- MOBILE --- */
 .nav-mobile {
-
-    display: none; 
-
+    display: none;
     position: fixed;
-
     bottom: 0;
-
-    left: 0;
-
     width: 100%;
-
     background: white;
-
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-
-    justify-content: space-around;
-
     padding: 15px 0;
-
+    box-shadow: 0 -2px 15px rgba(0,0,0,0.1);
+    justify-content: space-around;
     z-index: 1000;
-
 }
-
-
-
-.nav-item {
-
-    text-decoration: none;
-
-    color: #666;
-
-    font-weight: bold;
-
-}
-
-
-
-/* --- ADAPTATION TÉLÉPHONE --- */
 
 @media (max-width: 768px) {
-
-    .nav-pc { display: none; } /* Cache la barre PC sur mobile */
-
-    .nav-mobile { display: flex; } /* Affiche la barre mobile */
-
+    .nav-pc { display: none; }
+    .nav-mobile { display: flex; }
+    body { padding-bottom: 80px; } /* Espace pour la barre du bas */
     
-
-    body {
-
-        padding-bottom: 80px; /* IMPORTANT : Crée l'espace pour voir le bas du forum */
-
-    }
-
-
-
-    .container {
-
-        width: 95%;
-
-        margin-bottom: 20px;
-
-    }
-
-
-
     .btn {
-
         display: block;
-
         width: 100%;
-
         text-align: center;
-
     }
-
 }
 
-
-
-/* --- ADAPTATION PC --- */
-
+/* --- AFFICHAGE GRILLE PC --- */
 @media (min-width: 769px) {
-
-    .nav-mobile { display: none; }
-
-    
-
     #issues {
-
         display: grid;
-
-        grid-template-columns: 1fr 1fr;
-
-        gap: 20px;
-
+        grid-template-columns: repeat(2, 1fr); /* 2 colonnes égales */
+        align-items: start; /* Empêche les boites de s'étirer verticalement */
     }
-
 }
 
-@media (max-width: 768px) {
-
-    body {
-
-        /* Cette ligne permet de faire défiler la page assez bas 
-
-           pour voir le contenu derrière la barre mobile */
-
-        padding-bottom: 100px !important; 
-
-    }
-
-    .nav-mobile {
-
-        display: flex !important; /* Force l'affichage sur tel */
-
-    }
-
+.footer {
+    text-align: center;
+    padding: 40px;
+    background: #1b5e20;
+    color: white;
+    margin-top: 50px;
 }
