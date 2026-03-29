@@ -3,13 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoApp – Forum</title>
+    <title>EcoApp – Vidéos & Diapo</title>
     <link rel="stylesheet" href="style.css?v=2">
-
     <style>
-        /* Garde l'affichage des retours à la ligne pour les messages */
-        .post p {
-            white-space: pre-wrap;
+        /* DIAPORAMA SANS JS (Scroll Snap) */
+        .diapo-scroll {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 10px;
+            padding: 10px;
+            background: #f4f4f4;
+            border-radius: 15px;
+        }
+        .diapo-scroll img {
+            flex: 0 0 80%; /* Chaque image prend 80% de la largeur */
+            scroll-snap-align: center;
+            border-radius: 10px;
+            object-fit: contain;
+            height: 300px;
+            background: white;
+        }
+
+        /* STYLE VIDÉO */
+        .video-container {
+            margin-top: 20px;
+            width: 100%;
+        }
+        video {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
     </style>
 </head>
@@ -21,32 +45,29 @@
 </nav>
 
 <header class="header">
-    <h1>Forum EcoApp</h1>
-    <p>Partagez vos idées, images et documents</p>
+    <h1>Espace Multimédia EcoApp</h1>
+    <p>Découvrez nos logos et vidéos</p>
 </header>
 
 <main class="container">
 
     <section class="card">
-        <h2>Publier un message</h2>
-
-        <button class="btn" onclick="ouvrirMdp()">Entrer le mot de passe</button>
-
-        <div id="zone-mdp" style="display:none; margin-top:15px;">
-            <input type="password" id="mdp" placeholder="Mot de passe" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
-            <button class="btn" onclick="verifier()">Valider</button>
-        </div>
-
-        <div id="zone-publi" style="display:none; margin-top:20px;">
-            <a class="btn" href="https://github.com/valou2908/EcoApp/issues" target="_blank">
-                ➜ Publier un message sur GitHub
-            </a>
+        <h2>Nos Logos (Faites défiler →)</h2>
+        <div class="diapo-scroll">
+            <img src="https://github.com/user-attachments/assets/9e7f913a-cf97-4277-a739-e4be507a8925" alt="Logo 1">
+            <img src="https://github.com/user-attachments/assets/94cee149-bc73-4ff9-9661-fe47b423d4af" alt="Logo 2">
+            <img src="https://via.placeholder.com/600x400?text=Logo+3" alt="Logo 3">
         </div>
     </section>
 
     <section class="card">
-        <h2>Messages récents</h2>
-        <div id="issues">Chargement des messages...</div>
+        <h2>Présentation Vidéo</h2>
+        <div class="video-container">
+            <video controls poster="image-apercu.jpg">
+                <source src="ta-video.mp4" type="video/mp4">
+                Votre navigateur ne supporte pas la lecture de vidéos.
+            </video>
+        </div>
     </section>
 
 </main>
@@ -54,66 +75,6 @@
 <footer class="footer">
     © 2026 – EcoApp
 </footer>
-
-<nav class="nav-mobile">
-    <a href="index.html" class="nav-item">🏠 Accueil</a>
-    <a href="forum.html" class="nav-item active">💬 Forum</a>
-</nav>
-
-<script>
-const MDP = "EcoApp2024";
-
-function ouvrirMdp() {
-    document.getElementById("zone-mdp").style.display = "block";
-}
-
-function verifier() {
-    const saisie = document.getElementById("mdp").value;
-    if (saisie === MDP) {
-        document.getElementById("zone-publi").style.display = "block";
-        alert("Mot de passe correct.");
-    } else {
-        alert("Mot de passe incorrect.");
-    }
-}
-
-async function chargerIssues() {
-    try {
-        const url = "https://api.github.com/repos/valou2908/EcoApp/issues";
-        const res = await fetch(url);
-        const issues = await res.json();
-
-        const zone = document.getElementById("issues");
-        zone.innerHTML = "";
-
-        if (issues.length === 0) {
-            zone.innerHTML = "<p>Aucun message pour le moment.</p>";
-            return;
-        }
-
-        issues.forEach(issue => {
-            let body = issue.body || "Pas de texte.";
-
-            // FIX : Transforme le Markdown ![alt](url) en <img src="url">
-            body = body.replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1" style="max-width:100%; border-radius:10px; margin-top:10px;">');
-            
-            // Remplace les retours à la ligne par des balises <br>
-            body = body.replace(/\n/g, "<br>");
-
-            zone.innerHTML += `
-                <div class="post" style="border-bottom: 1px solid #eee; padding: 15px 0;">
-                    <h3 style="color: #2e7d32;">${issue.title}</h3>
-                    <div class="post-content">${body}</div>
-                    <small style="color: #666;">Posté par : <strong>${issue.user.login}</strong></small>
-                </div>
-            `;
-        });
-    } catch (e) {
-        document.getElementById("issues").innerHTML = "Erreur lors du chargement des messages.";
-    }
-}
-chargerIssues();
-</script>
 
 </body>
 </html>
