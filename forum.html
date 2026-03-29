@@ -1,237 +1,86 @@
 <!DOCTYPE html>
-
 <html lang="fr">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>EcoApp – Forum</title>
-
-    <link rel="stylesheet" href="style.css?v=2">
-
-
-
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-
-        /* Garde l'affichage des retours à la ligne pour les messages */
-
-        .post p {
-
-            white-space: pre-wrap;
-
+        /* Correction des fenêtres disproportionnées */
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 10px;
         }
-
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden; /* Empêche le contenu de dépasser */
+        }
+        .post {
+            border-bottom: 1px solid #eee;
+            padding: 20px 0;
+            word-wrap: break-word; /* Force le texte trop long à aller à la ligne */
+        }
+        .post img {
+            max-width: 100%; /* L'image ne dépassera jamais de la fenêtre */
+            height: auto;
+            border-radius: 8px;
+            display: block;
+            margin: 10px 0;
+        }
+        /* Style pour les liens pour qu'ils ne cassent pas le design */
+        .post a {
+            color: #2e7d32;
+            word-break: break-all;
+        }
     </style>
-
 </head>
-
 <body>
 
-
-
-<nav class="nav-pc">
-
-    <a href="index.html">Accueil</a>
-
-    <a href="forum.html">Forum</a>
-
-</nav>
-
-
-
-<header class="header">
-
-    <h1>Forum EcoApp</h1>
-
-    <p>Partagez vos idées, images et documents</p>
-
-</header>
-
-
-
 <main class="container">
-
-
-
     <section class="card">
-
-        <h2>Publier un message</h2>
-
-
-
-        <button class="btn" onclick="ouvrirMdp()">Entrer le mot de passe</button>
-
-
-
-        <div id="zone-mdp" style="display:none; margin-top:15px;">
-
-            <input type="password" id="mdp" placeholder="Mot de passe" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
-
-            <button class="btn" onclick="verifier()">Valider</button>
-
-        </div>
-
-
-
-        <div id="zone-publi" style="display:none; margin-top:20px;">
-
-            <a class="btn" href="https://github.com/valou2908/EcoApp/issues" target="_blank">
-
-                ➜ Publier un message sur GitHub
-
-            </a>
-
-        </div>
-
-    </section>
-
-
-
-    <section class="card">
-
         <h2>Messages récents</h2>
-
         <div id="issues">Chargement des messages...</div>
-
     </section>
-
-
-
 </main>
 
-
-
-<footer class="footer">
-
-    © 2026 – EcoApp
-
-</footer>
-
-
-
-<nav class="nav-mobile">
-
-    <a href="index.html" class="nav-item">🏠 Accueil</a>
-
-    <a href="forum.html" class="nav-item active">💬 Forum</a>
-
-</nav>
-
-
-
 <script>
-
-const MDP = "EcoApp2024";
-
-
-
-function ouvrirMdp() {
-
-    document.getElementById("zone-mdp").style.display = "block";
-
-}
-
-
-
-function verifier() {
-
-    const saisie = document.getElementById("mdp").value;
-
-    if (saisie === MDP) {
-
-        document.getElementById("zone-publi").style.display = "block";
-
-        alert("Mot de passe correct.");
-
-    } else {
-
-        alert("Mot de passe incorrect.");
-
-    }
-
-}
-
-
-
 async function chargerIssues() {
-
     try {
-
         const url = "https://api.github.com/repos/valou2908/EcoApp/issues";
-
         const res = await fetch(url);
-
         const issues = await res.json();
 
-
-
         const zone = document.getElementById("issues");
-
         zone.innerHTML = "";
 
-
-
         if (issues.length === 0) {
-
             zone.innerHTML = "<p>Aucun message pour le moment.</p>";
-
             return;
-
         }
 
-
-
         issues.forEach(issue => {
-
-            let body = issue.body || "Pas de texte.";
-
-
-
-            // FIX : Transforme le Markdown ![alt](url) en <img src="url">
-
-            body = body.replace(/!\[.*?\]\((.*?)\)/g, '<img src="$1" style="max-width:100%; border-radius:10px; margin-top:10px;">');
-
-            
-
-            // Remplace les retours à la ligne par des balises <br>
-
-            body = body.replace(/\n/g, "<br>");
-
-
+            // Utilisation de marked.parse pour transformer le Markdown en HTML complet
+            // Cela gère les images, les liens, les listes, etc.
+            const contentHTML = marked.parse(issue.body || "Pas de texte.");
 
             zone.innerHTML += `
-
-                <div class="post" style="border-bottom: 1px solid #eee; padding: 15px 0;">
-
-                    <h3 style="color: #2e7d32;">${issue.title}</h3>
-
-                    <div class="post-content">${body}</div>
-
+                <div class="post">
+                    <h3 style="color: #2e7d32; margin-top:0;">${issue.title}</h3>
+                    <div class="post-content">${contentHTML}</div>
                     <small style="color: #666;">Posté par : <strong>${issue.user.login}</strong></small>
-
                 </div>
-
             `;
-
         });
-
     } catch (e) {
-
         document.getElementById("issues").innerHTML = "Erreur lors du chargement des messages.";
-
     }
-
 }
-
 chargerIssues();
-
 </script>
-
-
-
 </body>
-
 </html>
