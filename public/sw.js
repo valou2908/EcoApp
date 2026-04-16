@@ -1,25 +1,11 @@
-// sw.js - Ce code tourne en arrière-plan, même site fermé
-self.addEventListener('push', function(event) {
-    const data = event.data ? event.data.json() : { title: 'EcoApp', body: 'Nouveau message !' };
-    
-    const options = {
-        body: data.body,
-        icon: 'Icone.png',
-        badge: 'Icone.png',
-        vibrate: [100, 50, 100],
-        data: {
-            url: 'forum.html'
-        }
-    };
-
-    event.waitUntil(
-        self.registration.showNotification(data.title, options)
-    );
+// Ce fichier permet d'afficher les notifications sur le panel Android/iOS
+self.addEventListener('install', (event) => {
+    self.skipWaiting();
 });
 
-// Quand on clique sur la notification
-self.addEventListener('notificationclick', function(event) {
+self.addEventListener('notificationclick', (event) => {
     event.notification.close();
+    // Quand on clique sur la notif, ça ouvre le site
     event.waitUntil(
         clients.openWindow('forum.html')
     );
