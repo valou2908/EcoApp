@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="Icone.png">
-    <title>Actualité</title>
+    <title>Actualité - EcoApp</title>
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
@@ -48,14 +48,6 @@
             padding: 40px 20px;
         }
 
-        .footer {
-            text-align: center;
-            padding: 30px;
-            background: var(--primary);
-            color: white;
-            margin-top: 50px;
-        }
-
         .container {
             width: 95%;
             max-width: 1000px;
@@ -68,7 +60,6 @@
             margin-bottom: 25px;
             border-radius: 12px;
             box-shadow: var(--shadow);
-            overflow: hidden;
         }
 
         .btn {
@@ -86,8 +77,7 @@
         .btn:hover { background: var(--primary-hover); }
 
         #issues {
-            display: flex;
-            flex-direction: column;
+            display: grid;
             gap: 20px;
         }
 
@@ -97,18 +87,9 @@
             border-left: 5px solid var(--primary);
             border-radius: 8px;
             word-wrap: break-word;
-            overflow-wrap: break-word;
         }
 
-        .post h3 { margin-top: 0; color: var(--primary); }
-
-        .post-content img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin: 10px 0;
-            display: block;
-        }
+        .post h3 { margin: 0 0 10px 0; color: var(--primary); }
 
         .badge {
             display: none;
@@ -139,14 +120,11 @@
             .nav-pc { display: none; }
             .nav-mobile { display: flex; }
             body { padding-bottom: 80px; }
-            .btn { display: block; width: 100%; text-align: center; }
+            #issues { grid-template-columns: 1fr; }
         }
 
         @media (min-width: 769px) {
-            #issues {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-            }
+            #issues { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
@@ -160,7 +138,7 @@
 
 <header class="header">
     <h1>Actualité</h1>
-    <p>Nos projets réalisés au cours de cette année</p>
+    <p>Suivez nos projets en temps réel</p>
 </header>
 
 <main class="container">
@@ -169,60 +147,59 @@
         <button class="btn" onclick="ouvrirMdp()">Entrer le mot de passe</button>
 
         <div id="zone-mdp" style="display:none; margin-top:15px;">
-            <input type="password" id="mdp" placeholder="Mot de passe" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; width: 200px;">
+            <input type="password" id="mdp" placeholder="Mot de passe" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
             <button class="btn" onclick="verifier()">Valider</button>
         </div>
 
         <div id="zone-publi" style="display:none; margin-top:20px;">
-            <a class="btn" href="https://github.com/valou2908/EcoApp/issues" target="_blank">
-                ➜ Créer un post sur GitHub
-            </a>
+            <a class="btn" href="https://github.com/valou2908/EcoApp/issues" target="_blank">➜ Créer un post sur GitHub</a>
         </div>
     </section>
 
     <section class="card">
         <h2>Messages récents</h2>
-        <div id="issues">Chargement des messages...</div>
+        <div id="issues">Chargement...</div>
     </section>
 </main>
 
-<footer class="footer">
-    © 2026 – No Name
-</footer>
-
 <nav class="nav-mobile">
-    <a href="index.html" style="text-decoration:none; color:black; font-weight:bold;">🏠 Accueil</a>
-    <a href="forum.html" style="text-decoration:none; color:var(--primary); font-weight:bold; position:relative;">
+    <a href="index.html" style="text-decoration:none; color:black;">🏠 Accueil</a>
+    <a href="forum.html" style="text-decoration:none; color:var(--primary); position:relative;">
         💬 Actualité <span id="badge-mobile" class="badge">!</span>
     </a>
-    <a href="objectif.html" style="text-decoration:none; color:black; font-weight:bold;">🏆 Nos objectifs</a>
+    <a href="objectif.html" style="text-decoration:none; color:black;">🏆 Objectifs</a>
 </nav>
 
 <script>
 const MDP = "Eco2025/26";
 marked.setOptions({ breaks: true });
 
-// --- 1. GESTION DU SERVICE WORKER (POUR MOBILE) ---
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-    .then(() => console.log("Service Worker prêt !"));
-}
-
-// Demander l'autorisation de notifier
-function demanderPermission() {
-    if ("Notification" in window) {
+// --- INITIALISATION SERVICE WORKER & NOTIFS ---
+async function initApp() {
+    if ('serviceWorker' in navigator) {
+        try {
+            await navigator.serviceWorker.register('sw.js');
+            console.log("SW enregistré.");
+        } catch (e) { console.error("Erreur SW", e); }
+    }
+    // Demande initiale (peut être bloquée par le navigateur si pas d'interaction)
+    if ("Notification" in window && Notification.permission === "default") {
         Notification.requestPermission();
     }
 }
-demanderPermission();
+
+initApp();
 
 function ouvrirMdp() {
+    // On redemande la permission au clic (plus de chances de succès)
+    if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission();
+    }
     document.getElementById("zone-mdp").style.display = "block";
 }
 
 function verifier() {
-    const saisie = document.getElementById("mdp").value;
-    if (saisie === MDP) {
+    if (document.getElementById("mdp").value === MDP) {
         document.getElementById("zone-publi").style.display = "block";
         document.getElementById("zone-mdp").style.display = "none";
     }
@@ -230,69 +207,58 @@ function verifier() {
 
 async function chargerIssues() {
     try {
-        const url = "https://api.github.com/repos/valou2908/EcoApp/issues";
-        const res = await fetch(url);
+        const res = await fetch("https://api.github.com/repos/valou2908/EcoApp/issues");
         const issues = await res.json();
-
         const zone = document.getElementById("issues");
         zone.innerHTML = "";
 
         if (!Array.isArray(issues) || issues.length === 0) {
-            zone.innerHTML = "<p>Aucun message pour le moment.</p>";
+            zone.innerHTML = "<p>Aucun message.</p>";
             return;
         }
 
-        // --- 2. LOGIQUE DE NOTIFICATION ---
-        const dernierNb = localStorage.getItem('ecoapp_nb_issues');
-        
+        // --- GESTION NOTIFICATIONS ---
+        const dernierNb = localStorage.getItem('nb_issues_eco');
         if (dernierNb !== null && issues.length > parseInt(dernierNb)) {
-            // Afficher badges
             document.getElementById("badge-pc").style.display = "inline";
             document.getElementById("badge-mobile").style.display = "inline";
 
-            // Notification système (Panel du tel / PC)
             if (Notification.permission === "granted") {
-                const notifTitle = "EcoApp : Nouveau message !";
-                const notifOptions = {
-                    body: issues[0].title,
-                    icon: "Icone.png",
-                    vibrate: [200, 100, 200]
-                };
-                
-                // Utilise le Service Worker pour une meilleure compatibilité mobile
-                navigator.serviceWorker.ready.then(registration => {
-                    registration.showNotification(notifTitle, notifOptions);
+                navigator.serviceWorker.ready.then(reg => {
+                    reg.showNotification("EcoApp : Nouveau message !", {
+                        body: issues[0].title,
+                        icon: "Icone.png",
+                        vibrate: [200, 100, 200],
+                        badge: "Icone.png",
+                        tag: "new-issue" // Évite les doublons
+                    });
                 });
             }
         }
 
-        // Marquer comme lu
-        setTimeout(() => {
-            localStorage.setItem('ecoapp_nb_issues', issues.length);
-            document.getElementById("badge-pc").style.display = "none";
-            document.getElementById("badge-mobile").style.display = "none";
-        }, 3000);
+        // Sauvegarde le nombre actuel
+        localStorage.setItem('nb_issues_eco', issues.length);
 
         issues.forEach(issue => {
-            const bodyHtml = marked.parse(issue.body || "Pas de texte.");
             zone.innerHTML += `
                 <div class="post">
                     <h3>${issue.title}</h3>
-                    <div class="post-content">${bodyHtml}</div>
-                    <hr style="border:0; border-top:1px solid #ccc; margin:10px 0;">
+                    <div>${marked.parse(issue.body || "")}</div>
+                    <hr style="border:0; border-top:1px solid #ddd; margin:10px 0;">
                     <small>Par : <strong>${issue.user.login}</strong></small>
-                </div>
-            `;
+                </div>`;
         });
-    } catch (e) {
-        document.getElementById("issues").innerHTML = "Erreur de connexion.";
-    }
+    } catch (e) { console.error(e); }
 }
 
-chargerIssues();
-// Vérification automatique toutes les 2 minutes
-setInterval(chargerIssues, 120000);
-</script>
+// Nettoyage des badges après 5s sur la page
+setTimeout(() => {
+    document.getElementById("badge-pc").style.display = "none";
+    document.getElementById("badge-mobile").style.display = "none";
+}, 5000);
 
+chargerIssues();
+setInterval(chargerIssues, 60000); // Vérifie chaque minute
+</script>
 </body>
 </html>
