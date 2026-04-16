@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="Icone.png">
-    <title>Actualité</title>
+    <title>Actualité - EcoApp</title>
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
@@ -22,35 +22,22 @@
 
         body {
             margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
         }
 
-        .nav-pc {
-            background: #1b5e20;
-            text-align: center;
-            padding: 15px 0;
-        }
-        .nav-pc a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: bold;
-            position: relative;
-        }
+        /* --- NAVIGATION --- */
+        .nav-pc { background: #1b5e20; text-align: center; padding: 15px 0; }
+        .nav-pc a { color: white; text-decoration: none; margin: 0 15px; font-weight: bold; position: relative; }
 
-        .header {
-            background: var(--primary);
-            color: white;
-            text-align: center;
-            padding: 40px 20px;
-        }
+        .header { background: var(--primary); color: white; text-align: center; padding: 40px 20px; }
 
+        /* --- MISE EN PAGE --- */
         .container {
             width: 95%;
-            max-width: 1000px;
+            max-width: 800px;
             margin: 30px auto;
         }
 
@@ -62,6 +49,37 @@
             box-shadow: var(--shadow);
         }
 
+        /* --- MESSAGES (Flux Vertical Stable) --- */
+        #issues {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .post {
+            background: #e8f5e9;
+            padding: 25px;
+            border-left: 6px solid var(--primary);
+            border-radius: 8px;
+            width: 100%;
+            word-wrap: break-word; /* Casse les mots trop longs */
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .post h3 { margin: 0 0 15px 0; color: var(--primary); font-size: 1.4rem; }
+
+        /* --- IMAGES DANS LES MESSAGES --- */
+        .post img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: block;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        /* --- BOUTONS ET FORMULAIRE --- */
         .btn {
             display: inline-block;
             background: var(--primary);
@@ -70,39 +88,25 @@
             border-radius: 8px;
             text-decoration: none;
             font-weight: bold;
-            cursor: pointer;
             border: none;
-            transition: 0.3s;
+            cursor: pointer;
+            transition: background 0.3s;
         }
         .btn:hover { background: var(--primary-hover); }
-
-        #issues {
-            display: grid;
-            gap: 20px;
-        }
-
-        .post {
-            background: #e8f5e9;
-            padding: 20px;
-            border-left: 5px solid var(--primary);
-            border-radius: 8px;
-            word-wrap: break-word;
-        }
-
-        .post h3 { margin: 0 0 10px 0; color: var(--primary); }
 
         .badge {
             display: none;
             background: #ff5252;
             color: white;
-            font-size: 10px;
-            padding: 2px 6px;
+            font-size: 11px;
+            padding: 2px 7px;
             border-radius: 10px;
             position: absolute;
-            top: -10px;
+            top: -12px;
             right: -15px;
         }
 
+        /* --- MOBILE --- */
         .nav-mobile {
             display: none;
             position: fixed;
@@ -120,12 +124,9 @@
             .nav-pc { display: none; }
             .nav-mobile { display: flex; }
             body { padding-bottom: 80px; }
-            #issues { grid-template-columns: 1fr; }
         }
 
-        @media (min-width: 769px) {
-            #issues { grid-template-columns: 1fr 1fr; }
-        }
+        .footer { text-align: center; padding: 30px; background: var(--primary); color: white; margin-top: 50px; }
     </style>
 </head>
 <body>
@@ -144,6 +145,7 @@
 <main class="container">
     <section class="card">
         <h2>Publier un message</h2>
+        <p style="font-size: 0.9rem; color: #666;">Seuls les membres autorisés peuvent publier.</p>
         <button class="btn" onclick="ouvrirMdp()">Entrer le mot de passe</button>
 
         <div id="zone-mdp" style="display:none; margin-top:15px;">
@@ -158,13 +160,17 @@
 
     <section class="card">
         <h2>Messages récents</h2>
-        <div id="issues">Chargement...</div>
+        <div id="issues">Chargement des derniers messages...</div>
     </section>
 </main>
 
+<footer class="footer">
+    © 2026 – No Name
+</footer>
+
 <nav class="nav-mobile">
     <a href="index.html" style="text-decoration:none; color:black;">🏠 Accueil</a>
-    <a href="forum.html" style="text-decoration:none; color:var(--primary); position:relative;">
+    <a href="forum.html" style="text-decoration:none; color:var(--primary); font-weight:bold; position:relative;">
         💬 Actualité <span id="badge-mobile" class="badge">!</span>
     </a>
     <a href="objectif.html" style="text-decoration:none; color:black;">🏆 Objectifs</a>
@@ -174,24 +180,12 @@
 const MDP = "Eco2025/26";
 marked.setOptions({ breaks: true });
 
-// --- INITIALISATION SERVICE WORKER & NOTIFS ---
-async function initApp() {
-    if ('serviceWorker' in navigator) {
-        try {
-            await navigator.serviceWorker.register('sw.js');
-            console.log("SW enregistré.");
-        } catch (e) { console.error("Erreur SW", e); }
-    }
-    // Demande initiale (peut être bloquée par le navigateur si pas d'interaction)
-    if ("Notification" in window && Notification.permission === "default") {
-        Notification.requestPermission();
-    }
+// 1. Initialisation Service Worker pour les notifications
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(err => console.log("Erreur SW", err));
 }
 
-initApp();
-
 function ouvrirMdp() {
-    // On redemande la permission au clic (plus de chances de succès)
     if ("Notification" in window && Notification.permission === "default") {
         Notification.requestPermission();
     }
@@ -210,14 +204,16 @@ async function chargerIssues() {
         const res = await fetch("https://api.github.com/repos/valou2908/EcoApp/issues");
         const issues = await res.json();
         const zone = document.getElementById("issues");
+        
+        if (!Array.isArray(issues)) return;
         zone.innerHTML = "";
 
-        if (!Array.isArray(issues) || issues.length === 0) {
-            zone.innerHTML = "<p>Aucun message.</p>";
+        if (issues.length === 0) {
+            zone.innerHTML = "<p>Aucun message pour le moment.</p>";
             return;
         }
 
-        // --- GESTION NOTIFICATIONS ---
+        // --- GESTION DES NOTIFICATIONS ---
         const dernierNb = localStorage.getItem('nb_issues_eco');
         if (dernierNb !== null && issues.length > parseInt(dernierNb)) {
             document.getElementById("badge-pc").style.display = "inline";
@@ -225,40 +221,41 @@ async function chargerIssues() {
 
             if (Notification.permission === "granted") {
                 navigator.serviceWorker.ready.then(reg => {
-                    reg.showNotification("EcoApp : Nouveau message !", {
-                        body: issues[0].title,
+                    reg.showNotification("EcoApp", {
+                        body: "Nouveau message : " + issues[0].title,
                         icon: "Icone.png",
-                        vibrate: [200, 100, 200],
-                        badge: "Icone.png",
-                        tag: "new-issue" // Évite les doublons
+                        tag: "new-issue"
                     });
                 });
             }
         }
-
-        // Sauvegarde le nombre actuel
         localStorage.setItem('nb_issues_eco', issues.length);
 
+        // --- AFFICHAGE DES MESSAGES ---
         issues.forEach(issue => {
-            zone.innerHTML += `
-                <div class="post">
-                    <h3>${issue.title}</h3>
-                    <div>${marked.parse(issue.body || "")}</div>
-                    <hr style="border:0; border-top:1px solid #ddd; margin:10px 0;">
-                    <small>Par : <strong>${issue.user.login}</strong></small>
-                </div>`;
+            const post = document.createElement('div');
+            post.className = 'post';
+            post.innerHTML = `
+                <h3>${issue.title}</h3>
+                <div class="content">${marked.parse(issue.body || "")}</div>
+                <hr style="border:0; border-top:1px solid #c8e6c9; margin:20px 0;">
+                <small>Par : <strong>${issue.user.login}</strong></small>
+            `;
+            zone.appendChild(post);
         });
-    } catch (e) { console.error(e); }
+    } catch (e) {
+        document.getElementById("issues").innerHTML = "Erreur de connexion aux messages.";
+    }
 }
 
-// Nettoyage des badges après 5s sur la page
+// Nettoyer les badges au bout de quelques secondes sur la page
 setTimeout(() => {
     document.getElementById("badge-pc").style.display = "none";
     document.getElementById("badge-mobile").style.display = "none";
-}, 5000);
+}, 6000);
 
 chargerIssues();
-setInterval(chargerIssues, 60000); // Vérifie chaque minute
+setInterval(chargerIssues, 120000); // Vérifie toutes les 2 min
 </script>
 </body>
 </html>
