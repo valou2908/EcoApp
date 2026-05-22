@@ -1,0 +1,28 @@
+name: Fermeture automatique des issues externes
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  close-issue:
+    runs-on: ubuntu-latest
+    # On exécute le script uniquement si l'auteur n'est PAS un collaborateur ou le propriétaire
+    if: github.event.issue.author_association != 'COLLABORATOR' && github.event.issue.author_association != 'OWNER'
+    steps:
+      - name: Fermer l'issue et laisser un message
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Bonjour ! Merci pour votre intérêt. Les contributions et la création d'issues sur ce dépôt sont réservées aux membres de l'équipe."
+            });
+            github.rest.issues.update({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed'
+            });
