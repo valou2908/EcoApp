@@ -1,0 +1,52 @@
+[
+    {
+        "question": "Qu'est-ce qu'un déchet ?",
+        "reponses": [
+            "Un objet ou une matière que l'on jette parce qu'on n'en a plus besoin",
+            "Uniquement les restes de nourriture",
+            "Quelque chose de forcément toxique et dangereux",
+            "Un objet que l'on doit cacher à la maison"
+        ],
+        "correcte": 0
+    },
+    {
+        "question": "Dans quelle poubelle doit-on jeter les bouteilles de lait et les boîtes en carton ?",
+        "reponses": [
+            "Dans la poubelle pour le verre",
+            "Dans la poubelle jaune (le tri sélectif)",
+            "Dans la poubelle ordinaire (restes ménagers)",
+            "On doit les brûler dans le jardin"
+        ],
+        "correcte": 1
+    },
+    {
+        "question": "Est-ce que tous les objets que nous jetons peuvent être recyclés ?",
+        "reponses": [
+            "Oui, tous sans exception",
+            "Non, certains matériaux ne se recyclent pas encore",
+            "Uniquement les objets en bois",
+            "Rien ne se recycle du tout"
+        ],
+        "correcte": 1
+    },
+    {
+        "question": "Combien de temps environ met une bouteille en plastique pour disparaître dans la nature ?",
+        "reponses": [
+            "Seulement quelques jours",
+            "Environ 1 an",
+            "Près de 450 ans",
+            "Elle ne disparaît jamais du tout"
+        ],
+        "correcte": 2
+    },
+    {
+        "question": "Pourquoi est-il important de recycler nos déchets ?",
+        "reponses": [
+            "Pour remplir les décharges plus vite",
+            "Pour protéger la nature et économiser les ressources de la Terre",
+            "Pour fabriquer des objets plus fragiles",
+            "Juste pour s'occuper le week-end"
+        ],
+        "correcte": 1
+    }
+]
