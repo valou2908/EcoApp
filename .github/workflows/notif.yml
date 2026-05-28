@@ -1,0 +1,17 @@
+name: Envoi Notification Éco-Délégués
+
+on:
+  issues:
+    types: [opened] # Se déclenche uniquement quand une nouvelle issue est créée
+
+jobs:
+  envoyer_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Envoyer le signal push gratuit
+        run: |
+          curl -H "Title: Nouvelle actualité !" \
+               -H "Priority: high" \
+               -H "Tags: deciduous_tree,loudspeaker" \
+               -d "${{ github.event.issue.title }}" \
+               https://ntfy.sh/eco_delegues_hr_actu
