@@ -12,6 +12,8 @@
 <nav class="nav-pc">
     <a href="index.html">Accueil</a>
     <a href="actualite.html">Actualité <span id="badge-pc" class="badge" style="display:none;">NOUVEAU</span></a>
+    <a href="quiz.html">Quiz</a>
+    <a href="tchat.html">Discussion</a>
     <a href="objectifs.html" class="active">Les objectifs</a>
     <a href="noussommes.html">Qui sommes Nous ?</a>
 </nav>
@@ -57,65 +59,12 @@
     </section>
 </main>
 
-<style>
-/* --- Styles spécifiques aux objectifs --- */
-
-.title-green {
-    color: #128305;
-    margin: 30px 0 15px 0;
-    font-size: 1.1rem;
-}
-
-.onu-box {
-    background: #e2fdcd;
-    border-left: 5px solid #49a407;
-    padding: 15px;
-    border-radius: 8px;
-    margin: 20px 0;
-}
-
-.onu-box h3 { color: #1e8f0f; margin-top: 0; font-size: 1.1rem; }
-
-.img-container { display: flex; justify-content: center; margin-top: 15px; }
-.img-container img { max-width: 100%; height: auto; border-radius: 5px; }
-
-/* La Grille */
-.objectifs-grid {
-    display: flex;
-    flex-direction: row; /* Côte à côte sur PC */
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.obj-card {
-    background: #e2fdcd;
-    border-left: 5px solid #49a407;
-    padding: 15px;
-    border-radius: 8px;
-}
-
-.obj-card h3 { color: #1e8f0f; margin-top: 0; font-size: 1.1rem; }
-.obj-card img { max-width: 100%; height: auto; border-radius: 5px; margin-top: 10px; }
-.obj-card a { color: #128305; font-weight: bold; text-decoration: none; }
-
-.main-obj { flex: 1.5; }
-.obj-side-column { flex: 1; display: flex; flex-direction: column; gap: 15px; }
-
-/* --- ADAPTATION MOBILE --- */
-@media (max-width: 768px) {
-    .objectifs-grid {
-        flex-direction: column; /* On empile tout sur téléphone */
-    }
-    
-    .main-obj, .obj-side-column {
-        width: 100%;
-    }
-}
-</style>
 
 <nav class="nav-mobile">
     <a href="index.html">🏠<br>Accueil</a>
     <a href="actualite.html">💬<br>Actualité <span class="badge" style="display:none;">!</span></a>
+    <a href="quiz.html">❓<br>Quiz</a>
+    <a href="tchat.html">💬<br>Discussion</a>
     <a href="objectifs.html" class="active">🏆<br>Objectifs</a>
     <a href="noussommes.html">👥<br>Qui sommes nous</a>
 </nav>

@@ -7,64 +7,14 @@
     <title>Actualité</title>
     <link rel="stylesheet" href="style.css?v=2">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <style>
-        #issues { display: flex; flex-direction: column; gap: 20px; }
-        .post { 
-            background: #ffffff; 
-            padding: 25px; 
-            border-left: 8px solid var(--primary); 
-            border-radius: 12px; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-            animation: fadeIn 0.5s ease; 
-        }
-        .post h3 { margin: 10px 0; color: var(--primary); font-size: 1.4rem; }
-        .post img { max-width: 100%; height: auto; border-radius: 8px; margin: 15px 0; }
-        .skeleton { 
-            height: 120px; 
-            background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%); 
-            background-size: 200% 100%; 
-            animation: loading 1.5s infinite; 
-            border-radius: 12px; 
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
-
-        /* Style du bandeau de notification */
-        #notif-banner {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-            background: #333;
-            color: white;
-            padding: 15px;
-            border-radius: 12px;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            font-size: 0.9rem;
-        }
-        .btn-notif {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-    </style>
 </head>
 <body>
 
 <nav class="nav-pc">
     <a href="index.html">Accueil</a>
     <a href="actualite.html" class="active">Actualité <span id="badge-pc" class="badge" style="display:none;">NOUVEAU</span></a>
+    <a href="quiz.html">Quiz</a>
+    <a href="tchat.html">Discussion</a>
     <a href="objectifs.html">Les objectifs</a>
     <a href="noussommes.html">Qui sommes Nous ?</a>
 </nav>
@@ -81,8 +31,8 @@
         <button class="btn" id="btn-admin" onclick="ouvrirMdp()" style="margin-top: 10px;">Publier un article</button>
         
         <div id="zone-mdp" style="display:none; margin-top:15px; gap: 10px; flex-wrap: wrap;">
-            <input type="password" id="mdp" placeholder="Code d'accès" style="padding:10px; border-radius:8px; border:1px solid #ddd;">
-            <button class="btn" onclick="verifier()">Accéder</button>
+            <input type="password" id="mdp" placeholder="Code d'accès…" class="mdp-input">
+            <button class="btn" onclick="verifier()">Valider</button>
         </div>
         
         <div id="zone-publi" style="display:none; margin-top:20px;">
@@ -102,21 +52,26 @@
 <nav class="nav-mobile">
     <a href="index.html">🏠<br>Accueil</a>
     <a href="actualite.html" class="active">💬<br>Actualité <span class="badge" style="display:none;">!</span></a>
+    <a href="quiz.html">❓<br>Quiz</a>
+    <a href="tchat.html">💬<br>Discussion</a>
     <a href="objectifs.html">🏆<br>Objectifs</a>
     <a href="noussommes.html">👥<br>Qui sommes nous</a>
 </nav>
 
 <script>
 // --- CONFIGURATION ---
-const SECRET = "RWNvMjAyNS8yNg=="; // "Eco2025/26"
+const SECRET = "RWNvMjAyNS8yNg==";
 marked.setOptions({ breaks: true, gfm: true });
 
-// 1. GESTION DES NOTIFICATIONS (Arrière-plan et chargement)
+// 1. GESTION DES NOTIFICATIONS (Arrière-plan)
 async function initNotifications() {
-    if (!("Notification" in window)) return;
+    if (!("Notification" in window) || !('serviceWorker' in navigator)) return;
 
-    // Si la permission n'est pas encore demandée, on affiche le bandeau
-    if (Notification.permission === "default") {
+    // Si la permission est déjà accordée, on active les services
+    if (Notification.permission === "granted") {
+        configurerPush();
+        ecouterNotificationsPush(); // Lancement direct si déjà autorisé
+    } else if (Notification.permission === "default") {
         creerBandeauInvitation();
     }
 }
@@ -124,11 +79,12 @@ async function initNotifications() {
 function creerBandeauInvitation() {
     const banner = document.createElement('div');
     banner.id = "notif-banner";
+    banner.style = "position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#fff; padding:15px; box-shadow:0 4px 15px rgba(0,0,0,0.15); border-radius:8px; display:flex; gap:15px; align-items:center; z-index:9999;";
     banner.innerHTML = `
-        <span>Recevoir les alertes ?</span>
-        <div style="display:flex;">
-            <button class="btn-notif" onclick="accepterNotif()">Activer</button>
-            <button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:#aaa; margin-left:10px; cursor:pointer;">Plus tard</button>
+        <span style="color:#333; font-weight:500;">Recevoir les alertes d'actualités ?</span>
+        <div style="display:flex; gap:10px;">
+            <button class="btn" onclick="accepterNotif()" style="padding:5px 10px; font-size:0.9rem;">Activer</button>
+            <button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:#aaa; cursor:pointer;">Plus tard</button>
         </div>
     `;
     document.body.appendChild(banner);
@@ -137,16 +93,52 @@ function creerBandeauInvitation() {
 async function accepterNotif() {
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
-        if ('serviceWorker' in navigator) {
-            const reg = await navigator.serviceWorker.ready;
-            reg.showNotification("Eco-Délégués H.R.", {
-                body: "Vous recevrez désormais nos actualités !",
-                icon: "Picture/icone.png",
-                vibrate: [100, 50, 100]
-            });
-        }
+        configurerPush();
+        ecouterNotificationsPush(); // On commence à écouter dès l'acceptation
     }
-    document.getElementById("notif-banner").remove();
+    const banner = document.getElementById("notif-banner");
+    if (banner) banner.remove();
+}
+
+async function configurerPush() {
+    try {
+        const reg = await navigator.serviceWorker.ready;
+        reg.showNotification("Eco-Délégués H.R.", {
+            body: "Abonnement aux notifications activé !",
+            icon: "icone.png",
+            vibrate: [100, 50, 100]
+        });
+    } catch (e) {
+        console.error("Erreur de configuration Push:", e);
+    }
+}
+
+// Connexion en temps réel à ntfy pour recevoir les notifications instantanément
+function ecouterNotificationsPush() {
+    const eventSource = new EventSource('https://ntfy.sh/eco_delegues_hr_actu/sse');
+    
+    eventSource.onmessage = async function(event) {
+        const data = JSON.parse(event.data);
+        
+        if (data.event === 'message') {
+            const reg = await navigator.serviceWorker.ready;
+            
+            reg.showNotification("Nouvelle actualité !", {
+                body: data.message,
+                icon: "icone.png",
+                vibrate: [100, 50, 100],
+                data: { url: 'actualite.html' }
+            });
+            
+            if (typeof chargerIssues === 'function') {
+                chargerIssues();
+            }
+        }
+    };
+
+    eventSource.onerror = function() {
+        setTimeout(ecouterNotificationsPush, 10000);
+    };
 }
 
 // 2. LOGIQUE D'ADMINISTRATION
@@ -205,15 +197,13 @@ async function chargerIssues() {
 
 // 4. INITIALISATION AU CHARGEMENT
 window.onload = () => {
-    // Enregistrement SW
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').then(() => {
             console.log("Service Worker Actif");
+            initNotifications(); // Gère l'initialisation globale de manière ordonnée
         });
     }
-
     chargerIssues();
-    initNotifications();
 };
 </script>
 </body>
